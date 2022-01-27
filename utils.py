@@ -65,9 +65,16 @@ def plot_table_grid(gs, max_rank):
         table_data.setdefault('mean_test_score', []).append(score)
         rank = gs.cv_results_['rank_test_score'][i]
         table_data.setdefault('rank', []).append(rank)
+    
+    sort_key =[(index, value) for index, value in enumerate(table_data['rank'])]
+    sort_key.sort(key=lambda x: x[1])
+    index_sorted = [x for x, y in sort_key]
+    values_sorted = []
+    for value in table_data.values():
+        values_sorted.append([value[index] for index in index_sorted])
 
     fig = go.Figure(data=[go.Table(header=dict(values=headers),
-        cells = dict(values=list(table_data.values())))])
+        cells = dict(values=values_sorted))])
 
     fig.show()
 
